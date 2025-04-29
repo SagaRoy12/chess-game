@@ -36,6 +36,16 @@ io.on('connection' , (uniqueSocketVal)=>{
     else{
         uniqueSocketVal.emit("spectator") // emit the spectator event to any additional players
     }
+
+    // player disconnection handeling
+    uniqueSocketVal.on('disconnect' , ()=>{
+        if(uniqueSocketVal.id === players.white){
+            delete players.white // remove the white player from the players object
+        }
+        else if(uniqueSocketVal.id === players.black){
+            delete players.black // remove the black player from the players object
+        }
+    })
 })
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`); // log the server port to the console
