@@ -26,6 +26,16 @@ app.get('/' , (req , res)=>{
 
 io.on('connection' , (uniqueSocketVal)=>{
     console.log(`connected`)
+    if(!players.white){
+        players.white = uniqueSocketVal.id // assign the first player to white
+        uniqueSocketVal.emit("player-color" , "white") // emit the player color to the first player
+    }else if(!players.black){
+        players.black = uniqueSocketVal.id // assign the second player to black
+        uniqueSocketVal.emit("player-color" , "black") // emit the player color to the second player
+    }
+    else{
+        uniqueSocketVal.emit("spectator") // emit the spectator event to any additional players
+    }
 })
 server.listen(port, () => {
     console.log(`Server is running on port ${port}`); // log the server port to the console
