@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const http = require('http')
 const socketIo = require('socket.io');  
-const { createServer } = require('http');
 const {Chess} = require('chess.js');
 const path = require('path');
 const port =  3000; 
@@ -17,7 +16,7 @@ const io = socketIo(server) // creating a socket server and passing the express 
 const chessGame = new Chess();
 
 let players = {}
-let currentPlayer = "W" // current player who joins first gets white pieces
+let currentPlayer = "w" // current player who joins first gets white pieces
 
 // rendering the index page
 app.get('/' , (req , res)=>{
@@ -25,7 +24,7 @@ app.get('/' , (req , res)=>{
 })
 
 io.on('connection' , (uniqueSocketVal)=>{
-    console.log(`connected`)
+    console.log(`connected ${uniqueSocketVal.id}`);
     if(!players.white){
         players.white = uniqueSocketVal.id // assign the first player to white
         uniqueSocketVal.emit("player-color" , "white") // emit the player color to the first player
@@ -45,6 +44,33 @@ io.on('connection' , (uniqueSocketVal)=>{
         else if(uniqueSocketVal.id === players.black){
             delete players.black // remove the black player from the players object
         }
+    })
+
+    //move event handelling
+    uniqueSocketVal.on('move' , (movement)=>{
+       try{
+        if(chessGame.turn()==='b' && uniqueSocketVal.id ===players.white){
+            return; //if in the mean time while other player is trying to move then the peice wont move and get back to its original position
+        }
+        else if(chessGame.turn()==='w' && uniqueSocketVal.id ===players.black){
+            return;
+        }else{
+            const result = chessGame.move(movement); // make the move using the chess.js library
+            if(result){
+                currentPlayer = chessGame.turn(); // update the current player;
+                io.emit('move' , movement); // emit the move to all connected clients
+                io.emit('chess-board-state' , chessGame.fen()); // emit the current state of the chess board to all connected clients
+            }else{
+                console.log(`wrong move ${movement}`)
+                uniqueSocketVal.emit("invalidMove" , movement); // emit the invalid move event to the player who made the wrong move
+            }
+        }
+
+    }
+    catch(error){
+    uniqueSocketVal.emit("invalidMove" , movement); // emit the invalid move event to the player who made the wrong move
+    console.log(`invalid move ${movement}`)
+    }
     })
 })
 server.listen(port, () => {
