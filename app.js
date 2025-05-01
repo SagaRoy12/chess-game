@@ -39,6 +39,7 @@ io.on('connection' , (uniqueSocketVal)=>{
     // player disconnection handeling
     uniqueSocketVal.on('disconnect' , ()=>{
         if(uniqueSocketVal.id === players.white){
+            console.log(`player ${uniqueSocketVal.id} is  disconnected`)
             delete players.white // remove the white player from the players object
         }
         else if(uniqueSocketVal.id === players.black){
