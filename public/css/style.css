@@ -42,8 +42,11 @@ body {
             color: black;
         }
 
-        .flipped {
-            transform: rotate(180deg);
+       .chessBoard .flipped {
+          transform: rotate(180deg);
+         display: flex;
+         flex-wrap: wrap;
+         flex-direction: row-reverse;
         }
 
         .square {
