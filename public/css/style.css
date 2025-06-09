@@ -22,12 +22,59 @@ body {
     height: 100vh;
     background-color: #3f3f46; /* Zinc color */
 }
+
 .chessBoard {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 150px;
-    height: 150px;
-    background-color: red;
-    margin: auto;
-}
+            display: grid;
+            grid-template-columns: repeat(8, minmax(0, 1fr));
+            grid-template-rows: repeat(8, minmax(0, 1fr));
+            background-color: rgb(255, 142, 142);
+            width: 400px;
+            height: 400px;
+            transform: rotate(0deg);
+        }
+
+        .piece.white {
+            color: white;
+            filter: drop-shadow(0 0 2px rgba(0, 0, 0, 1));
+        }
+
+        .piece.black {
+            color: black;
+        }
+
+        .flipped {
+            transform: rotate(180deg);
+        }
+
+        .square {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .square.light {
+            background-color: #f0d9b5;
+        }
+
+        .square.dark {
+            background-color: #b58863;
+        }
+
+        .piece {
+            font-size: 36px;
+            cursor: pointer;
+            transform: none;
+        }
+
+        .piece.draggable {
+            cursor: grab;
+        }
+
+        .dragging {
+            opacity: 0.5;
+        }
+        /* Rotate pieces for black player */
+        .chessBoard.flipped .piece {
+            transform: rotate(180deg) !important;
+        }
+        
