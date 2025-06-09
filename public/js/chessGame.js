@@ -79,13 +79,13 @@ function getPieceUniqeCode(piece) {  /*because of HOISTING logic in function del
 renderBoard();
 function handelMove (source , target ){
     const move= {
-        from :`{String.fromCharCode(97+source.column)}${8-source.row}`,
-        to:`{String.fromCharCode(97+target .column)} ${8-target.row}`,
+        from :`${String.fromCharCode(97 + source.column)}${8 - source.row}`,
+        to:`${String.fromCharCode(97 + target.column)}${8 - target.row}`,
         promotion: "q"
     }
     socket.emit("move", move); // emit the move event to the server
 }
-socket.on("playerRole" ,(role)=>{
+socket.on("playerRole" ,function (role){
     playerRole = role;
     renderBoard();
 })
