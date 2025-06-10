@@ -68,15 +68,16 @@ const renderBoard = ()=>{
         boardElement.classList.remove("flipped");
     }
 }  
-function getPieceUniqeCode(piece) {  /*because of HOISTING logic in function delcaration this function is declared using 
+function getPieceUniqeCode(piece) { 
+   /*because of HOISTING logic in function delcaration this function is declared using 
     functions not const arrow function as it is used before its declaration in renderBoard function*/
-  const unicodePieces = {
-    p: "♟", r: "♜", n: "♞", b: "♝", q: "♛", k: "♚",
-    P: "♙", R: "♖", N: "♘", B: "♗", Q: "♕", K: "♔",
+    const unicodePieces = {
+      p: "♟", r: "♜", n: "♞", b: "♝", q: "♛", k: "♚",
+      P: "♙", R: "♖", N: "♘", B: "♗", Q: "♕", K: "♔",
   };
   return unicodePieces[piece.type] || "";
 }
-renderBoard();
+// renderBoard();
 function handelMove (source , target ){
     const move= {
         from :`${String.fromCharCode(97 + source.column)}${8 - source.row}`,
