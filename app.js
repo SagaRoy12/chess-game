@@ -27,10 +27,10 @@ io.on('connection' , (uniqueSocketVal)=>{
     console.log(`connected ${uniqueSocketVal.id}`);
     if(!players.white){
         players.white = uniqueSocketVal.id // assign the first player to white
-        uniqueSocketVal.emit("playerRole" , "white") // emit the player color to the first player
+        uniqueSocketVal.emit("playerRole" , "w") // emit the player color to the first player
     }else if(!players.black){
         players.black = uniqueSocketVal.id // assign the second player to black
-        uniqueSocketVal.emit("playerRole" , "black") // emit the player color to the second player
+        uniqueSocketVal.emit("playerRole" , "b") // emit the player color to the second player
     }
     else{
         uniqueSocketVal.emit("spectator") // emit the spectator event to any additional players
