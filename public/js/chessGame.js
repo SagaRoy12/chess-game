@@ -22,20 +22,39 @@ const renderBoard = ()=>{
           );
           sqaredBox.dataset.row = rowIndex;        // add data attributes for row and column
           sqaredBox.dataset.column = squareIndex; // add data attributes for row and column
-          if (square) {
-            const pieceElement = document.createElement("div");
+          
+
+          sqaredBox.addEventListener("dragover", (e) => {
+            e.preventDefault();
+          });
+          sqaredBox.addEventListener("drop", (e) => {
+            e.preventDefault();
+            if (draggedPiece) {
+              const targetSource = {
+                row: parseInt(sqaredBox.dataset.row),
+                column: parseInt(sqaredBox.dataset.column),
+              };
+              handelMove(sourceSquare, targetSource);
+            }
+          });
+          if (square) {  // if the square has a piece then only
+            const pieceElement = document.createElement("div"); // create a div element for the pieces
             pieceElement.classList.add(
               "piece",
               square.color === "w" ? "white" : "black"
             ); // add piece class based on the color and type
-
+            console.log("Rendering piece:", square.type, square.color, "At", rowIndex, squareIndex);
             pieceElement.innerText = getPieceUniqeCode(square) ; // get the unicode character for the piece type
             pieceElement.draggable = playerRole === square.color; // make the piece draggable only if it is the player's turn
+            console.log("Setting piece draggable:", pieceElement.draggable);
             pieceElement.addEventListener("dragstart", (event) => {
+               console.log("🔥 Drag started on", square.type, square.color, "at", rowIndex, squareIndex);
               if (pieceElement.draggable) {
+               // console.log("Drag started: ", sourceSquare); // Add this
                   draggedPiece = pieceElement; // set the dragged piece to the piece element
                   sourceSquare = { row: rowIndex, column: squareIndex };
                   event.dataTransfer.setData("text/plain", ""); // cross browsers support
+                  console.log("Drag started: ", sourceSquare); // Add this
               }
             });
             pieceElement.addEventListener("dragend", (e) => {
@@ -44,20 +63,7 @@ const renderBoard = ()=>{
               sourceSquare = null;
             });
             sqaredBox.appendChild(pieceElement); // append the piece element to the square box
-            sqaredBox.addEventListener("dragover", (e) => {
-              e.preventDefault(); // preventing the piece from being forcefully dragged
-            });
-            sqaredBox.addEventListener("drop", (e) => {
-              e.preventDefault();
-              if (draggedPiece) {
-                const targetSource = {
-                   row: parseInt(sqaredBox.dataset.row),
-                   column: parseInt(sqaredBox.dataset.column),
-            };
-            handelMove(sourceSquare, targetSource);
-              }
-            });
-          }
+            }
           boardElement.appendChild(sqaredBox); // append the board to the board element
         });
     })
@@ -67,6 +73,7 @@ const renderBoard = ()=>{
     else{
         boardElement.classList.remove("flipped");
     }
+  console.log("Player Role: ", playerRole);
 }  
 function getPieceUniqeCode(piece) { 
    /*because of HOISTING logic in function delcaration this function is declared using 
@@ -79,6 +86,7 @@ function getPieceUniqeCode(piece) {
 }
 // renderBoard();
 function handelMove (source , target ){
+   console.log("👉 handelMove called", source, target); // ADD THIS
     const move= {
         from :`${String.fromCharCode(97 + source.column)}${8 - source.row}`,
         to:`${String.fromCharCode(97 + target.column)}${8 - target.row}`,
@@ -90,15 +98,16 @@ socket.on("playerRole" ,function (role){
     playerRole = role;
     renderBoard();
 })
-socket.on("spectatorRole" , ()=>{
+socket.on('spectatorRole' , ()=>{
     playerRole = null;
     renderBoard();
 })
-socket.on("boardState", (eqn)=>{
-    chess.load(eqn);
+socket.on('chess-board-state', (fen)=>{
+  console.log("received state " , fen);
+    chess.load(fen);
     renderBoard();
 })
-socket.on("move", (move)=>{
+socket.on('move', (move)=>{
     chess.move(move);  // the move that is played by the user and validated by teh chess.js library
     renderBoard();
 })
