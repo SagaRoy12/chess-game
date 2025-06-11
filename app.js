@@ -49,6 +49,7 @@ io.on('connection' , (uniqueSocketVal)=>{
 
     //move event handelling
     uniqueSocketVal.on('move' , (movement)=>{
+        console.log("Move received from client:", movement);
        try{
         if(chessGame.turn()==='b' && uniqueSocketVal.id ===players.white){
             return; //if in the mean time while other player is trying to move then the peice wont move and get back to its original position
@@ -61,6 +62,7 @@ io.on('connection' , (uniqueSocketVal)=>{
                 currentPlayer = chessGame.turn(); // update the current player;
                 io.emit('move' , movement); // emit the move to all connected clients
                 io.emit('chess-board-state' , chessGame.fen()); // emit the current state of the chess board to all connected clients
+                console.log("sent board state " , chessGame.fen())
             }else{
                 console.log(`wrong move ${movement}`)
                 uniqueSocketVal.emit("invalidMove" , movement); // emit the invalid move event to the player who made the wrong move
