@@ -74,7 +74,7 @@ body {
             opacity: 0.5;
         }
         /* Rotate pieces for black player */
-        .chessBoard.flipped.square , 
+        .chessBoard.flipped.square,
         .chessBoard.flipped .piece {
             transform: rotate(180deg);
         }
